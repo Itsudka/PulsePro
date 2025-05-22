@@ -106,153 +106,317 @@ function validateDietPlan(plan: any) {
 }
 
 
-http.route({
-    path: "/vapi/generate-program",
-    method: "POST",
-    handler: httpAction(async (ctx, request) =>{
+// http.route({
+//     path: "/vapi/generate-program",
+//     method: "POST",
+//     handler: httpAction(async (ctx, request) =>{
        
 
+//         try {
+//              console.log("✅ VAPI endpoint hit!");
+//             const payload = await request.json();
+
+//             const {
+//                 user_id,
+//                 age,
+//                 height,
+//                 weight,
+//                 injuries,
+//                 workout_days,
+//                 fitness_goal,
+//                 fitness_level,
+//                 dietary_restrictions,
+//             } = payload
+
+//             console.log("Payload is here:", payload);
+
+//         const model = genAI.getGenerativeModel({
+//             model: "gemini-2.0-flash-001",
+//             generationConfig: {
+//             temperature: 0.4, // lower temperature for more predictable outputs
+//             topP: 0.9,
+//             responseMimeType: "application/json",
+//             },
+//         });
+
+//         const workoutPrompt = `You are an experienced fitness coach creating a personalized workout plan based on:
+//             Age: ${age}
+//             Height: ${height}
+//             Weight: ${weight}
+//             Injuries or limitations: ${injuries}
+//             Available days for workout: ${workout_days}
+//             Fitness goal: ${fitness_goal}
+//             Fitness level: ${fitness_level}
+            
+//             As a professional coach:
+//             - Consider muscle group splits to avoid overtraining the same muscles on consecutive days
+//             - Design exercises that match the fitness level and account for any injuries
+//             - Structure the workouts to specifically target the user's fitness goal
+            
+//             CRITICAL SCHEMA INSTRUCTIONS:
+//             - Your output MUST contain ONLY the fields specified below, NO ADDITIONAL FIELDS
+//             - "sets" and "reps" MUST ALWAYS be NUMBERS, never strings
+//             - For example: "sets": 3, "reps": 10
+//             - Do NOT use text like "reps": "As many as possible" or "reps": "To failure"
+//             - Instead use specific numbers like "reps": 12 or "reps": 15
+//             - For cardio, use "sets": 1, "reps": 1 or another appropriate number
+//             - NEVER include strings for numerical fields
+//             - NEVER add extra fields not shown in the example below
+            
+//             Return a JSON object with this EXACT structure:
+//             {
+//             "schedule": ["Monday", "Wednesday", "Friday"],
+//             "exercises": [
+//                 {
+//                 "day": "Monday",
+//                 "routines": [
+//                     {
+//                     "name": "Exercise Name",
+//                     "sets": 3,
+//                     "reps": 10
+//                     }
+//                 ]
+//                 }
+//             ]
+//             }
+            
+//             DO NOT add any fields that are not in this example. Your response must be a valid JSON object with no additional text.`;
+
+//         const workoutResult = await model.generateContent(workoutPrompt)
+//         const workoutPlanText = workoutResult.response.text();
+
+//         // VALIDATE THE INPUT COMING FROM AI
+//         let workoutPlan = JSON.parse(workoutPlanText);
+//         workoutPlan = validateWorkoutPlan(workoutPlan);
+
+//         console.log("Workout Plan:", workoutPlan);
+     
+
+//         const dietPrompt = `You are an experienced nutrition coach creating a personalized diet plan based on:
+//         Age: ${age}
+//         Height: ${height}
+//         Weight: ${weight}
+//         Fitness goal: ${fitness_goal}
+//         Dietary restrictions: ${dietary_restrictions}
+        
+//         As a professional nutrition coach:
+//         - Calculate appropriate daily calorie intake based on the person's stats and goals
+//         - Create a balanced meal plan with proper macronutrient distribution
+//         - Include a variety of nutrient-dense foods while respecting dietary restrictions
+//         - Consider meal timing around workouts for optimal performance and recovery
+        
+//         CRITICAL SCHEMA INSTRUCTIONS:
+//         - Your output MUST contain ONLY the fields specified below, NO ADDITIONAL FIELDS
+//         - "dailyCalories" MUST be a NUMBER, not a string
+//         - DO NOT add fields like "supplements", "macros", "notes", or ANYTHING else
+//         - ONLY include the EXACT fields shown in the example below
+//         - Each meal should include ONLY a "name" and "foods" array
+
+//         Return a JSON object with this EXACT structure and no other fields:
+//         {
+//           "dailyCalories": 2000,
+//           "meals": [
+//             {
+//               "name": "Breakfast",
+//               "foods": ["Oatmeal with berries", "Greek yogurt", "Black coffee"]
+//             },
+//             {
+//               "name": "Lunch",
+//               "foods": ["Grilled chicken salad", "Whole grain bread", "Water"]
+//             }
+//           ]
+//         }
+        
+//         DO NOT add any fields that are not in this example. Your response must be a valid JSON object with no additional text.`;
+
+//         const dietResult = await model.generateContent(dietPrompt);
+//         const dietPlanText = dietResult.response.text();
+
+       
+
+//          // VALIDATE THE INPUT COMING FROM AI
+//         let dietPlan = JSON.parse(dietPlanText);
+//         dietPlan = validateDietPlan(dietPlan);
+//         console.log("Validated diet plan", dietPlan)
+
+       
+
+//         console.log("🏋️ Final workoutPlan payload:", JSON.stringify(workoutPlan, null, 2));
+//         console.log("🥗 Final dietPlan payload:", JSON.stringify(dietPlan, null, 2));
+
+//         // save to our DB: CONVEX 
+
+//         const planId = await ctx.runMutation(api.plans.createPlan,{
+//             userId: user_id,
+//             dietPlan,
+//             isActive:true,
+//             workoutPlan,
+//             name: `${fitness_goal} Plan - ${new Date().toLocaleDateString()}`
+//         })
+
+//         console.log("✅ Plan saved with ID:", planId);
+
+//         return new Response(
+//             JSON.stringify({
+//             success: true,
+//             data: {
+//                 planId,
+//                 workoutPlan,
+//                 dietPlan,
+//             },
+//             }),
+//             {
+//             status: 200,
+//             headers: { "Content-Type": "application/json" },
+//             }
+//         );
+
+//         } catch (error) {
+//             console.error("Error generating fitness plan:", error);
+//             return new Response(
+//                 JSON.stringify({
+//                 success: false,
+//                 error: error instanceof Error ? error.message : String(error),
+//                 }),
+//                 {
+//                 status: 500,
+//                 headers: { "Content-Type": "application/json" },
+//                 }
+//             );
+//         }
+//     })
+// })
+
+http.route({
+    path: "/vapi/generate-program",
+    method: "GET", // <-- CAMBIADO DE POST A GET
+    handler: httpAction(async (ctx, request) => {
         try {
-             console.log("✅ VAPI endpoint hit!");
-            const payload = await request.json();
+        console.log("✅ VAPI endpoint hit!");
 
-            const {
-                user_id,
-                age,
-                height,
-                weight,
-                injuries,
-                workout_days,
-                fitness_goal,
-                fitness_level,
-                dietary_restrictions,
-            } = payload
+        // ⚠️ OBTENER PARÁMETROS DE LA URL
+        const { searchParams } = new URL(request.url);
 
-            console.log("Payload is here:", payload);
+        const user_id = searchParams.get("user_id")!;
+        const age = Number(searchParams.get("age"));
+        const height = Number(searchParams.get("height"));
+        const weight = Number(searchParams.get("weight"));
+        const fitness_level = searchParams.get("fitness_level")!;
+        const injuries = searchParams.get("injuries")!;
+        const fitness_goal = searchParams.get("fitness_goal")!;
+        const workout_days = Number(searchParams.get("workout_days"));
+        const dietary_restrictions = searchParams.get("dietary_restrictions")!;
+
+        // LOG
+        console.log("Params received:", {
+            user_id, age, height, weight, fitness_level, injuries,
+            fitness_goal, workout_days, dietary_restrictions
+        });
 
         const model = genAI.getGenerativeModel({
             model: "gemini-2.0-flash-001",
             generationConfig: {
-            temperature: 0.4, // lower temperature for more predictable outputs
+            temperature: 0.4,
             topP: 0.9,
             responseMimeType: "application/json",
             },
         });
 
         const workoutPrompt = `You are an experienced fitness coach creating a personalized workout plan based on:
-            Age: ${age}
-            Height: ${height}
-            Weight: ${weight}
-            Injuries or limitations: ${injuries}
-            Available days for workout: ${workout_days}
-            Fitness goal: ${fitness_goal}
-            Fitness level: ${fitness_level}
-            
-            As a professional coach:
-            - Consider muscle group splits to avoid overtraining the same muscles on consecutive days
-            - Design exercises that match the fitness level and account for any injuries
-            - Structure the workouts to specifically target the user's fitness goal
-            
-            CRITICAL SCHEMA INSTRUCTIONS:
-            - Your output MUST contain ONLY the fields specified below, NO ADDITIONAL FIELDS
-            - "sets" and "reps" MUST ALWAYS be NUMBERS, never strings
-            - For example: "sets": 3, "reps": 10
-            - Do NOT use text like "reps": "As many as possible" or "reps": "To failure"
-            - Instead use specific numbers like "reps": 12 or "reps": 15
-            - For cardio, use "sets": 1, "reps": 1 or another appropriate number
-            - NEVER include strings for numerical fields
-            - NEVER add extra fields not shown in the example below
-            
-            Return a JSON object with this EXACT structure:
+    Age: ${age}
+    Height: ${height}
+    Weight: ${weight}
+    Injuries or limitations: ${injuries}
+    Available days for workout: ${workout_days}
+    Fitness goal: ${fitness_goal}
+    Fitness level: ${fitness_level}
+
+    As a professional coach:
+    - Consider muscle group splits to avoid overtraining the same muscles on consecutive days
+    - Design exercises that match the fitness level and account for any injuries
+    - Structure the workouts to specifically target the user's fitness goal
+
+    CRITICAL SCHEMA INSTRUCTIONS:
+    - Your output MUST contain ONLY the fields specified below, NO ADDITIONAL FIELDS
+    - "sets" and "reps" MUST ALWAYS be NUMBERS, never strings
+    - For example: "sets": 3, "reps": 10
+    - Do NOT use text like "reps": "As many as possible" or "reps": "To failure"
+    - Instead use specific numbers like "reps": 12 or "reps": 15
+    - For cardio, use "sets": 1, "reps": 1 or another appropriate number
+    - NEVER include strings for numerical fields
+    - NEVER add extra fields not shown in the example below
+
+    Return a JSON object with this EXACT structure:
+    {
+    "schedule": ["Monday", "Wednesday", "Friday"],
+    "exercises": [
+        {
+        "day": "Monday",
+        "routines": [
             {
-            "schedule": ["Monday", "Wednesday", "Friday"],
-            "exercises": [
-                {
-                "day": "Monday",
-                "routines": [
-                    {
-                    "name": "Exercise Name",
-                    "sets": 3,
-                    "reps": 10
-                    }
-                ]
-                }
-            ]
+            "name": "Exercise Name",
+            "sets": 3,
+            "reps": 10
             }
-            
-            DO NOT add any fields that are not in this example. Your response must be a valid JSON object with no additional text.`;
+        ]
+        }
+    ]
+    }
 
-        const workoutResult = await model.generateContent(workoutPrompt)
+    DO NOT add any fields that are not in this example. Your response must be a valid JSON object with no additional text.`;
+
+        const workoutResult = await model.generateContent(workoutPrompt);
         const workoutPlanText = workoutResult.response.text();
-
-        // VALIDATE THE INPUT COMING FROM AI
-        let workoutPlan = JSON.parse(workoutPlanText);
-        workoutPlan = validateWorkoutPlan(workoutPlan);
-
-        console.log("Workout Plan:", workoutPlan);
-     
+        let workoutPlan = validateWorkoutPlan(JSON.parse(workoutPlanText));
 
         const dietPrompt = `You are an experienced nutrition coach creating a personalized diet plan based on:
-        Age: ${age}
-        Height: ${height}
-        Weight: ${weight}
-        Fitness goal: ${fitness_goal}
-        Dietary restrictions: ${dietary_restrictions}
-        
-        As a professional nutrition coach:
-        - Calculate appropriate daily calorie intake based on the person's stats and goals
-        - Create a balanced meal plan with proper macronutrient distribution
-        - Include a variety of nutrient-dense foods while respecting dietary restrictions
-        - Consider meal timing around workouts for optimal performance and recovery
-        
-        CRITICAL SCHEMA INSTRUCTIONS:
-        - Your output MUST contain ONLY the fields specified below, NO ADDITIONAL FIELDS
-        - "dailyCalories" MUST be a NUMBER, not a string
-        - DO NOT add fields like "supplements", "macros", "notes", or ANYTHING else
-        - ONLY include the EXACT fields shown in the example below
-        - Each meal should include ONLY a "name" and "foods" array
+    Age: ${age}
+    Height: ${height}
+    Weight: ${weight}
+    Fitness goal: ${fitness_goal}
+    Dietary restrictions: ${dietary_restrictions}
 
-        Return a JSON object with this EXACT structure and no other fields:
+    As a professional nutrition coach:
+    - Calculate appropriate daily calorie intake based on the person's stats and goals
+    - Create a balanced meal plan with proper macronutrient distribution
+    - Include a variety of nutrient-dense foods while respecting dietary restrictions
+    - Consider meal timing around workouts for optimal performance and recovery
+
+    CRITICAL SCHEMA INSTRUCTIONS:
+    - Your output MUST contain ONLY the fields specified below, NO ADDITIONAL FIELDS
+    - "dailyCalories" MUST be a NUMBER, not a string
+    - DO NOT add fields like "supplements", "macros", "notes", or ANYTHING else
+    - ONLY include the EXACT fields shown in the example below
+    - Each meal should include ONLY a "name" and "foods" array
+
+    Return a JSON object with this EXACT structure and no other fields:
+    {
+    "dailyCalories": 2000,
+    "meals": [
         {
-          "dailyCalories": 2000,
-          "meals": [
-            {
-              "name": "Breakfast",
-              "foods": ["Oatmeal with berries", "Greek yogurt", "Black coffee"]
-            },
-            {
-              "name": "Lunch",
-              "foods": ["Grilled chicken salad", "Whole grain bread", "Water"]
-            }
-          ]
+        "name": "Breakfast",
+        "foods": ["Oatmeal with berries", "Greek yogurt", "Black coffee"]
+        },
+        {
+        "name": "Lunch",
+        "foods": ["Grilled chicken salad", "Whole grain bread", "Water"]
         }
-        
-        DO NOT add any fields that are not in this example. Your response must be a valid JSON object with no additional text.`;
+    ]
+    }
+
+    DO NOT add any fields that are not in this example. Your response must be a valid JSON object with no additional text.`;
 
         const dietResult = await model.generateContent(dietPrompt);
         const dietPlanText = dietResult.response.text();
+        let dietPlan = validateDietPlan(JSON.parse(dietPlanText));
 
-       
-
-         // VALIDATE THE INPUT COMING FROM AI
-        let dietPlan = JSON.parse(dietPlanText);
-        dietPlan = validateDietPlan(dietPlan);
-        console.log("Validated diet plan", dietPlan)
-
-       
-
-        console.log("🏋️ Final workoutPlan payload:", JSON.stringify(workoutPlan, null, 2));
-        console.log("🥗 Final dietPlan payload:", JSON.stringify(dietPlan, null, 2));
-
-        // save to our DB: CONVEX 
-
-        const planId = await ctx.runMutation(api.plans.createPlan,{
+        const planId = await ctx.runMutation(api.plans.createPlan, {
             userId: user_id,
             dietPlan,
-            isActive:true,
+            isActive: true,
             workoutPlan,
-            name: `${fitness_goal} Plan - ${new Date().toLocaleDateString()}`
-        })
+            name: `${fitness_goal} Plan - ${new Date().toLocaleDateString()}`,
+        });
 
         console.log("✅ Plan saved with ID:", planId);
 
@@ -270,22 +434,22 @@ http.route({
             headers: { "Content-Type": "application/json" },
             }
         );
-
         } catch (error) {
-            console.error("Error generating fitness plan:", error);
-            return new Response(
-                JSON.stringify({
-                success: false,
-                error: error instanceof Error ? error.message : String(error),
-                }),
-                {
-                status: 500,
-                headers: { "Content-Type": "application/json" },
-                }
-            );
+        console.error("Error generating fitness plan:", error);
+        return new Response(
+            JSON.stringify({
+            success: false,
+            error: error instanceof Error ? error.message : String(error),
+            }),
+            {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+            }
+        );
         }
-    })
-})
+    }),
+});
+
 
 export default http;
 

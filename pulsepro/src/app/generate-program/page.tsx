@@ -7,7 +7,7 @@ import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react'
 
-const GenerateProgrampage = () => {
+const GenerateProgramPage = () => {
 
   const [callActive, setCallActive] = useState(false);
   const [connecting, setConnecting] = useState(false);
@@ -192,7 +192,7 @@ const GenerateProgrampage = () => {
                 </div>
               </div>
 
-              <h2 className="text-xl font-bold text-foreground">CodeFlex AI</h2>
+              <h2 className="text-xl font-bold text-foreground">PulsePro AI</h2>
               <p className="text-sm text-muted-foreground mt-1">Fitness & Diet Coach</p>
 
               {/* SPEAKING INDICATOR */}
@@ -258,7 +258,7 @@ const GenerateProgrampage = () => {
               {messages.map((msg, index) => (
                 <div key={index} className="message-item animate-fadeIn">
                   <div className="font-semibold text-xs text-muted-foreground mb-1">
-                    {msg.role === "assistant" ? "CodeFlex AI" : "You"}:
+                    {msg.role === "assistant" ? "Pulse Pro AI" : "You"}:
                   </div>
                   <p className="text-foreground">{msg.content}</p>
                 </div>
@@ -309,4 +309,4 @@ const GenerateProgrampage = () => {
   )
 }
 
-export default GenerateProgrampage
+export default GenerateProgramPage
